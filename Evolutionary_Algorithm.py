@@ -7,6 +7,8 @@ t_start_column = 0
 t_end_column = 1
 # Possible offset of the range (T_Start, t_0) for the creation of samples in step_1
 offset = 10
+# Replace for zero to be able to calculate relative_fitness_value (reciprocal of value)
+mindestwert	= 0.0001
 
 # T_Start: Instant when pre-crash recording time starts.
 T_Start	= -5000
@@ -34,7 +36,8 @@ sigma = 5 # Standard deviation in normal distribution: It is also known as the s
 # error_hit_set: (Fehlertreff in Excel sheet) is the set with the samples, that have discovered an
 # error within the test procedure.  At the beginning of the whole procedure the set is empty, but
 # as the procedure discover errors in testing, it will be filled with them.
-error_hit_set = np.array([[-4025, -300],[-3213, -1232]])
+# error_hit_set = np.array([[-4025, -300],[-3213, -1232]])
+error_hit_set = np.array([])
 
 def initialize_samples_array():
     # Generate random values for the t_start values in the range [0,1]
@@ -57,6 +60,9 @@ def fitness_function(samples, error_hit_set):
     return res_V_1
 
 def V_1(samples_array, error_hit_set):
+    if error_hit_set.size == 0:  # if error_hit_set is empty
+        return np.zeros(samples_array.shape[0]) # return an array filled with zeros
+
     # weight (t_Start, E_i[t_Starμ]) and t_End, E_i[t_End] in the samples and error_hit_set matrices 
     # with a and b correspondingly before the diffrence comparison between them 
     weights = np.array([[a,b]])
@@ -89,6 +95,9 @@ def V_2(samples_array):
     return distance.clip(min=0)
 
 def relative_fitness_value(samples_score):
+    # replace zeros in samples_score with "mindestwert" value that can be passed as an argument to np.reciprocal
+    samples_score = np.where(samples_score == 0, mindestwert, samples_score)
+    
     reciprocal = np.reciprocal(samples_score)
     reciprocal_sum = np.sum(reciprocal)
     result = reciprocal * (1 / reciprocal_sum)
