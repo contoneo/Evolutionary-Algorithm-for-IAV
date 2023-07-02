@@ -18,7 +18,7 @@ t_0 = 0
 # T: Pre-crash recording time established in the regulation.
 T = (T_Start, 0)
 # popsize: Population size in the Evolutive Algorithm.  Number of test samples created with the algorithm
-popsize	= 4
+popsize	= 100
 # lambda_new: New generated samples in each iteration
 lambda_new = 2
 # The value obtained from the minimum is divided by 1000 so that the value of V_1 is comparable with the of V_2 (next criteria).
