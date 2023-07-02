@@ -6,3 +6,5 @@
 /tf copy 3.py
 /tf copy.py
 /tf.py
+WebApp/__pycache__/*
+__pycache__/
