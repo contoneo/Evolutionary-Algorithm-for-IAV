@@ -127,7 +127,7 @@ def mutate_selected_offspring(offspring_selection, samples):
     offspring[indices, :] = offspring[indices, ::-1]
     
     # Eliminate rows from offspring that are already present in samples
-    offspring = np.setdiff2d(offspring, samples, assume_unique=True, axis=0)
+    offspring = np.array([row for row in offspring if not any(np.array_equal(row, row2) for row2 in samples)])
     
     return offspring
 
