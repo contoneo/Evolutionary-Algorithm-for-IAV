@@ -116,6 +116,18 @@ def select_offspring(bins, samples, lambda_new):
     
     return samples_selected
 
+def mutate_selected_offspring(offspring_selection):
+    mutation = np.round(np.random.normal(mu, sigma, size=(lambda_new, 2))).astype(int)
+    offspring = offspring_selection + mutation
+
+    # Find indices where t_start is greater than t_end
+    indices = np.where(offspring[:, t_start_column] > offspring[:, t_end_column])[0]
+
+    # Swap the elements for the selected indices
+    offspring[indices, :] = offspring[indices, ::-1]
+    
+    return offspring
+
 def select_new_generation(matrix, scores):
     # Sort the rows based on the negation of scores.  
     # As negate an array, the lowest elements become the highest elements
@@ -159,9 +171,7 @@ def step_2(samples):
     #  In this case the "Recombination" phase does not take place, so directly the new samples are
     #  mutated by means of Normal mutation function [Equation 8] for each
     #  property of the new samples (t_Start, t_End ).
-
-    mutation = np.round(np.random.normal(mu, sigma, size=(lambda_new, 2))).astype(int)
-    offspring = offspring_selection + mutation
+    offspring = mutate_selected_offspring(offspring_selection)
 
     # 2.4. Mutated Samples Evaluation:
     #  The new samples are evaluated within the fitness function.
