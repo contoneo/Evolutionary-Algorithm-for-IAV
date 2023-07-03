@@ -6,6 +6,9 @@ import numpy as np
 def parse_input(input_text):
     # Split the input by lines and convert each line to a list of values
     rows = input_text.strip().split('\n')
+    print(rows)
+    if np.array_equal(rows, np.array([''])):
+        return np.array([])
     array_data = [list(map(int, row.split(','))) for row in rows]
     # Convert the list of lists to a NumPy array
     array_np = np.array(array_data)
