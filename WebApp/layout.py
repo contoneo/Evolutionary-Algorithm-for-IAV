@@ -19,18 +19,14 @@ def main():
     st.write("_All time variables are given in milliseconds (ms)_")
 
     st.subheader('Implementation Variables')
-    colA, colB, colC, colD, colE = st.columns(5)
+    colA, colD = st.columns(2)
     app_vars = st.container()
     st.divider()
     with app_vars:
         ea.step_2_iterations = colA.number_input('`step_2_iterations`: Number of iterations in Step_2'
                                                 , value=ea.step_2_iterations, step=1, format="%d")
-        ea.t_start_column = colB.number_input('$t_{Start}$ Column', value=ea.t_start_column)
-        ea.t_end_column = colC.number_input('$t_{End}$ Column', value=ea.t_end_column)
         ea.offset = colD.number_input('`offset`: Possible offset of the range (T_Start, t_0) for the creation of samples in step_1'
                                     , value=ea.offset)
-        ea.mindestwert = colE.number_input('`mindestwert`: Replace for zero to be able to calculate relative_fitness_value (reciprocal of value)'
-                                        , value=ea.mindestwert, format="%f")
 
     st.subheader('Algorithm Variables')
     col1, col2, col3 = st.columns(3)
