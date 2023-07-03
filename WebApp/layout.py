@@ -9,7 +9,7 @@ def parse_input(input_text):
     array_data = [list(map(int, row.split(','))) for row in rows]
     # Convert the list of lists to a NumPy array
     array_np = np.array(array_data)
-    return array_np
+    return np.unique(array_np, axis=0)
 
 def main():
     st.set_page_config(layout="wide")
