@@ -116,7 +116,7 @@ def select_offspring(bins, samples, lambda_new):
     
     return samples_selected
 
-def mutate_selected_offspring(offspring_selection):
+def mutate_selected_offspring(offspring_selection, samples):
     mutation = np.round(np.random.normal(mu, sigma, size=(lambda_new, 2))).astype(int)
     offspring = offspring_selection + mutation
 
@@ -125,6 +125,9 @@ def mutate_selected_offspring(offspring_selection):
 
     # Swap the elements for the selected indices
     offspring[indices, :] = offspring[indices, ::-1]
+    
+    # Eliminate rows from offspring that are already present in samples
+    offspring = np.setdiff2d(offspring, samples, assume_unique=True, axis=0)
     
     return offspring
 
@@ -171,7 +174,7 @@ def step_2(samples):
     #  In this case the "Recombination" phase does not take place, so directly the new samples are
     #  mutated by means of Normal mutation function [Equation 8] for each
     #  property of the new samples (t_Start, t_End ).
-    offspring = mutate_selected_offspring(offspring_selection)
+    offspring = mutate_selected_offspring(offspring_selection, samples)
 
     # 2.4. Mutated Samples Evaluation:
     #  The new samples are evaluated within the fitness function.
