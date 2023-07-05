@@ -18,7 +18,7 @@ t_0 = 0
 # T: Pre-crash recording time established in the regulation.
 T = (T_Start, 0)
 # popsize: Population size in the Evolutive Algorithm.  Number of test samples created with the algorithm
-popsize	= 100
+popsize	= 4
 # lambda_new: New generated samples in each iteration
 lambda_new = 2
 # The value obtained from the minimum is divided by 1000 so that the value of V_1 is comparable with the of V_2 (next criteria).
@@ -38,6 +38,7 @@ sigma = 5 # Standard deviation in normal distribution: It is also known as the s
 # as the procedure discover errors in testing, it will be filled with them.
 # error_hit_set = np.array([[-4025, -300],[-3213, -1232]])
 error_hit_set = np.array([])
+first_test_samples = np.array([])
 
 def initialize_samples_array():
     # Generate random values for the t_start values in the range [0,1]
@@ -114,6 +115,21 @@ def select_offspring(bins, samples, lambda_new):
     
     return samples_selected
 
+def mutate_selected_offspring(offspring_selection, samples):
+    mutation = np.round(np.random.normal(mu, sigma, size=(lambda_new, 2))).astype(int)
+    offspring = offspring_selection + mutation
+
+    # Find indices where t_start is greater than t_end
+    indices = np.where(offspring[:, t_start_column] > offspring[:, t_end_column])[0]
+
+    # Swap the elements for the selected indices
+    offspring[indices, :] = offspring[indices, ::-1]
+    
+    # Eliminate rows from offspring that are already present in samples
+    offspring = np.array([row for row in offspring if not any(np.array_equal(row, row2) for row2 in samples)])
+    
+    return offspring
+
 def select_new_generation(matrix, scores):
     # Sort the rows based on the negation of scores.  
     # As negate an array, the lowest elements become the highest elements
@@ -157,9 +173,7 @@ def step_2(samples):
     #  In this case the "Recombination" phase does not take place, so directly the new samples are
     #  mutated by means of Normal mutation function [Equation 8] for each
     #  property of the new samples (t_Start, t_End ).
-
-    mutation = np.round(np.random.normal(mu, sigma, size=(lambda_new, 2))).astype(int)
-    offspring = offspring_selection + mutation
+    offspring = mutate_selected_offspring(offspring_selection, samples)
 
     # 2.4. Mutated Samples Evaluation:
     #  The new samples are evaluated within the fitness function.
@@ -176,11 +190,15 @@ def step_2(samples):
     return new_generation
 
 # Then, the EA algorithm is:
+def EA():
+    array = first_test_samples
+    for _ in range(step_2_iterations):
+        array = step_2(array)
+    return array
 
-test_samples = step_1()
-print(test_samples)
-# iterations of step_2
-for _ in range(step_2_iterations):
-    test_samples = step_2(test_samples)
-    
+# Step 1
+first_test_samples = step_1()
+print(first_test_samples)
+# Step 2 iterations
+test_samples = EA()
 print(test_samples)

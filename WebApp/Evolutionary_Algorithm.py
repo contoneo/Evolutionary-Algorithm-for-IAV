@@ -195,4 +195,3 @@ def EA():
     for _ in range(step_2_iterations):
         array = step_2(array)
     return array
-    
